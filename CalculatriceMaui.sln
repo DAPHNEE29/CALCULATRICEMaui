@@ -1,0 +1,46 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatriceMaui", "src\CalculatriceMaui\CalculatriceMaui.csproj", "{B58C6296-D5CD-4881-9388-3C492438D8EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatriceMaui.Core", "src\CalculatriceMaui.Core\CalculatriceMaui.Core.csproj", "{7A69147A-F15D-4107-8497-51310AF866D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatriceMaui.Core.Tests", "tests\CalculatriceMaui.Core.Tests\CalculatriceMaui.Core.Tests.csproj", "{299F9224-E7F1-4729-9C3E-7204F2AF44A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8A1F0C21-4B7E-4D6E-9B2A-5C3E7D8F9A01}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9B2F1D32-5C8F-4E7F-8C3B-6D4F8E9A0B12}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B58C6296-D5CD-4881-9388-3C492438D8EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B58C6296-D5CD-4881-9388-3C492438D8EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B58C6296-D5CD-4881-9388-3C492438D8EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B58C6296-D5CD-4881-9388-3C492438D8EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A69147A-F15D-4107-8497-51310AF866D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A69147A-F15D-4107-8497-51310AF866D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A69147A-F15D-4107-8497-51310AF866D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A69147A-F15D-4107-8497-51310AF866D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{299F9224-E7F1-4729-9C3E-7204F2AF44A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{299F9224-E7F1-4729-9C3E-7204F2AF44A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{299F9224-E7F1-4729-9C3E-7204F2AF44A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{299F9224-E7F1-4729-9C3E-7204F2AF44A9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B58C6296-D5CD-4881-9388-3C492438D8EF} = {8A1F0C21-4B7E-4D6E-9B2A-5C3E7D8F9A01}
+		{7A69147A-F15D-4107-8497-51310AF866D2} = {8A1F0C21-4B7E-4D6E-9B2A-5C3E7D8F9A01}
+		{299F9224-E7F1-4729-9C3E-7204F2AF44A9} = {9B2F1D32-5C8F-4E7F-8C3B-6D4F8E9A0B12}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C4D5E6F7-A8B9-4C0D-9E1F-2A3B4C5D6E7F}
+	EndGlobalSection
+EndGlobal

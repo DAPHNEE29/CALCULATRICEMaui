@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--
+        Styles de la calculatrice.
+
+        Chaque couleur est fournie deux fois (clair et sombre) via
+        AppThemeBinding : l'application suit ainsi le thème du système, et le
+        bouton « Thème » permet de le forcer.
+    -->
+
+    <!-- Base commune à toutes les touches.
+
+         Les marges intérieures et la hauteur minimale sont volontairement
+         faibles : une touche doit pouvoir rétrécir avec la ligne qui la
+         contient. Une valeur fixe imposerait un plancher de taille au pavé et
+         ferait déborder la dernière rangée sur une fenêtre basse. La taille
+         du texte et les marges sont ensuite ajustées par le code-behind en
+         fonction de la place disponible. -->
+    <Style x:Key="ToucheBase" TargetType="Button">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource CalcTexte}, Dark={StaticResource CalcTexteSombre}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CalcChiffre}, Dark={StaticResource CalcChiffreSombre}}" />
+        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="Padding" Value="0,2" />
+        <Setter Property="MinimumHeightRequest" Value="0" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="VerticalOptions" Value="Fill" />
+        <Setter Property="TextTransform" Value="None" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+    </Style>
+
+    <!-- Chiffres -->
+    <Style x:Key="ToucheChiffre" TargetType="Button" BasedOn="{StaticResource ToucheBase}">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+    </Style>
+
+    <!-- Opérateurs -->
+    <Style x:Key="ToucheOperateur" TargetType="Button" BasedOn="{StaticResource ToucheBase}">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CalcOperateur}, Dark={StaticResource CalcOperateurSombre}}" />
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+
+    <!-- Touche égale -->
+    <Style x:Key="ToucheEgal" TargetType="Button" BasedOn="{StaticResource ToucheBase}">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CalcEgal}, Dark={StaticResource CalcEgalSombre}}" />
+        <Setter Property="TextColor" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+
+    <!-- Fonctions avancées et effacements -->
+    <Style x:Key="ToucheFonction" TargetType="Button" BasedOn="{StaticResource ToucheBase}">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CalcFonctionClaire}, Dark={StaticResource CalcFonctionSombre}}" />
+        <Setter Property="FontSize" Value="17" />
+    </Style>
+
+    <!-- Boutons de la barre d'outils -->
+    <Style x:Key="ToucheBarre" TargetType="Button">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource CalcAccent}, Dark={StaticResource CalcEgalSombre}}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="Padding" Value="8,2" />
+        <Setter Property="MinimumHeightRequest" Value="0" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="TextTransform" Value="None" />
+    </Style>
+
+    <!-- Pastille mémoire -->
+    <Style x:Key="BadgeMemoire" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CalcAccent}, Dark={StaticResource CalcEgalSombre}}" />
+        <Setter Property="StrokeThickness" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 9" />
+        <Setter Property="Padding" Value="7,2" />
+        <Setter Property="HeightRequest" Value="18" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <!-- Zone d'affichage -->
+    <Style x:Key="CalculetteExpression" TargetType="Label">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource CalcTexteSecondaire}, Dark={StaticResource CalcTexteSecondaireSombre}}" />
+        <Setter Property="HorizontalTextAlignment" Value="End" />
+        <Setter Property="LineBreakMode" Value="TailTruncation" />
+    </Style>
+
+    <Style x:Key="CalculetteResultat" TargetType="Label">
+        <Setter Property="FontSize" Value="40" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource CalcTexte}, Dark={StaticResource CalcTexteSombre}}" />
+        <Setter Property="HorizontalTextAlignment" Value="End" />
+        <Setter Property="LineBreakMode" Value="TailTruncation" />
+    </Style>
+
+    <Style x:Key="CalculetteStatut" TargetType="Label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="TextColor" Value="{StaticResource CalcErreur}" />
+        <Setter Property="LineBreakMode" Value="TailTruncation" />
+    </Style>
+
+    <!-- Lignes d'historique -->
+    <Style x:Key="HistoriqueExpression" TargetType="Label">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource CalcTexteSecondaire}, Dark={StaticResource CalcTexteSecondaireSombre}}" />
+    </Style>
+
+    <Style x:Key="HistoriqueResultat" TargetType="Label">
+        <Setter Property="FontSize" Value="17" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource CalcTexte}, Dark={StaticResource CalcTexteSombre}}" />
+    </Style>
+    <!-- Barre de navigation.
+
+         Elle n'est pas décorative : sans NavigationPage, la page principale
+         n'a aucune pile de navigation et l'appel à Navigation.PushAsync reste
+         sans effet. Le style est implicite pour s'appliquer à toute
+         NavigationPage créée par le code. -->
+    <Style TargetType="NavigationPage">
+        <Setter Property="BarBackgroundColor"
+                Value="{AppThemeBinding Light={StaticResource CalcSurface}, Dark={StaticResource CalcSurfaceSombre}}" />
+        <Setter Property="BarTextColor"
+                Value="{AppThemeBinding Light={StaticResource CalcTexte}, Dark={StaticResource CalcTexteSombre}}" />
+    </Style>
+
+</ResourceDictionary>

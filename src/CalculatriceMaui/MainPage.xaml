@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CalculatriceMaui.ViewModels"
+             x:DataType="vm:CalculatorViewModel"
+             x:Class="CalculatriceMaui.MainPage"
+             Title="Calculatrice"
+             BackgroundColor="{AppThemeBinding Light={StaticResource CalcFond}, Dark={StaticResource CalcFondSombre}}">
+
+    <!-- ==================================================================
+         LAYOUTS EMPLOYÉS SUR CETTE PAGE (6 conteneurs, exigence : 4 minimum)
+
+         1. Grid                 racine (lignes/colonnes adaptatives) et pavé
+         2. ScrollView           zone d'affichage : défile si le contenu dépasse
+         3. Border               cadre de l'affichage et rangée avancée
+         4. VerticalStackLayout  empilement des blocs de la zone d'affichage
+         5. FlexLayout           barre d'outils et fonctions avancées : passe
+                                 à la ligne sur un écran étroit au lieu de
+                                 déborder
+         6. HorizontalStackLayout ligne mémoire + message d'erreur
+         ================================================================== -->
+
+    <Grid x:Name="Racine"
+          RowSpacing="0"
+          ColumnSpacing="0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="RacineLigne0" Height="Auto" />
+            <RowDefinition x:Name="RacineLigne1" Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="RacineColonne0" Width="*" />
+            <ColumnDefinition x:Name="RacineColonne1" Width="0" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ============================================================
+             ZONE D'AFFICHAGE
+             Le ScrollView est volontaire : sur un petit écran ou en
+             paysage, un résultat très long fait défiler l'affichage au
+             lieu de déborder. MaximumHeightRequest (défini dans le
+             code-behind) interdit à l'affichage d'écraser le pavé.
+             ============================================================ -->
+        <ScrollView x:Name="ZoneAffichage"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Orientation="Both"
+                    MaximumHeightRequest="320">
+            <Border Margin="12,12,12,6"
+                    Padding="16,12"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 24"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource CalcSurface}, Dark={StaticResource CalcSurfaceSombre}}">
+
+                <VerticalStackLayout Spacing="6">
+
+                    <!-- Barre d'outils : FlexLayout, les boutons passent à la
+                         ligne si la largeur ne suffit pas. -->
+                    <FlexLayout Wrap="Wrap"
+                               Direction="Row"
+                               JustifyContent="Start"
+                               AlignItems="Center">
+                        <Button Text="Historique"
+                                Style="{StaticResource ToucheBarre}"
+                                CommandParameter="Historique"
+                                Clicked="OnHistoriqueTouche"
+                                SemanticProperties.Description="Ouvrir l'historique des calculs" />
+                        <Button Text="Copier"
+                                Style="{StaticResource ToucheBarre}"
+                                CommandParameter="Copier"
+                                Clicked="OnCopierTouche"
+                                SemanticProperties.Description="Copier le résultat dans le presse-papiers" />
+                        <Button Text="Coller"
+                                Style="{StaticResource ToucheBarre}"
+                                CommandParameter="Coller"
+                                Clicked="OnCollerTouche"
+                                SemanticProperties.Description="Coller le contenu du presse-papiers" />
+                        <Button Text="±"
+                                Style="{StaticResource ToucheBarre}"
+                                CommandParameter="±"
+                                Clicked="OnActionTouche"
+                                SemanticProperties.Description="Changer le signe du nombre courant" />
+                        <!-- Mémoire M+ / MR / MC.
+
+                             Ces trois touches sont volontairement masquées :
+                             les fonctionnalités avancées ne sont pas
+                             obligatoires dans l'énoncé. Leur implémentation
+                             (moteur, ViewModel, tests) est conservée, il
+                             suffit de passer IsVisible à True pour les
+                             réafficher. -->
+                        <Button Text="M+"
+                                IsVisible="False"
+                                Style="{StaticResource ToucheBarre}"
+                                CommandParameter="M+"
+                                Clicked="OnMemoirePlusTouche"
+                                SemanticProperties.Description="Ajouter la valeur courante à la mémoire" />
+                        <Button Text="MR"
+                                IsVisible="False"
+                                Style="{StaticResource ToucheBarre}"
+                                CommandParameter="MR"
+                                Clicked="OnMemoireRappelTouche"
+                                SemanticProperties.Description="Rappeler la valeur en mémoire" />
+                        <Button Text="MC"
+                                IsVisible="False"
+                                Style="{StaticResource ToucheBarre}"
+                                CommandParameter="MC"
+                                Clicked="OnMemoireEffacerTouche"
+                                SemanticProperties.Description="Vider la mémoire" />
+                        <Button Text="Thème"
+                                Style="{StaticResource ToucheBarre}"
+                                CommandParameter="Theme"
+                                Clicked="OnThemeTouche"
+                                SemanticProperties.Description="Basculer entre thème clair et thème sombre" />
+                    </FlexLayout>
+
+                    <!-- Message d'erreur. La pastille mémoire est masquée en
+                         même temps que les touches M+ / MR / MC : sans elles,
+                         la mémoire reste vide et la pastille ne s'afficherait
+                         jamais. -->
+                    <HorizontalStackLayout Spacing="8">
+                        <Border x:Name="PastilleMemoire"
+                                Style="{StaticResource BadgeMemoire}"
+                                IsVisible="False">
+                            <Label Text="M"
+                                   FontSize="11"
+                                   FontAttributes="Bold"
+                                   TextColor="#FFFFFF" />
+                        </Border>
+                        <Label x:Name="LabelStatut"
+                               Style="{StaticResource CalculetteStatut}"
+                               Text="{Binding StatusText}"
+                               IsVisible="{Binding HasError}"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <!-- Opération en cours, AU-DESSUS du résultat. -->
+                    <Label x:Name="LabelExpression"
+                           Style="{StaticResource CalculetteExpression}"
+                           Text="{Binding ExpressionText}"
+                           SemanticProperties.Description="Opération en cours" />
+
+                    <!-- Nombre saisi ou aperçu du résultat. -->
+                    <Label x:Name="LabelResultat"
+                           Style="{StaticResource CalculetteResultat}"
+                           Text="{Binding DisplayText}"
+                           SemanticProperties.Description="Résultat" />
+
+                </VerticalStackLayout>
+            </Border>
+        </ScrollView>
+
+        <!-- ============================================================
+             PAVÉ NUMÉRIQUE — Grid de 4 colonnes et 6 lignes.
+             Les six lignes sont en « * » (sauf la première) : les touches
+             se redimensionnent avec l'écran au lieu d'être figées, et le
+             pavé ne peut pas déborder en paysage.
+             ============================================================ -->
+        <Grid x:Name="PaveNumerique"
+              Grid.Row="1"
+              Grid.Column="0"
+              RowSpacing="6"
+              ColumnSpacing="6"
+              Padding="12,0,12,12">
+
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="PaveLigne0" Height="0.85*" />
+            <RowDefinition x:Name="PaveLigne1" Height="*" />
+            <RowDefinition x:Name="PaveLigne2" Height="*" />
+            <RowDefinition x:Name="PaveLigne3" Height="*" />
+            <RowDefinition x:Name="PaveLigne4" Height="*" />
+            <RowDefinition x:Name="PaveLigne5" Height="*" />
+        </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Ligne 0 : fonctions avancées.
+
+                 Chaque fonction occupe sa propre case, comme les chiffres et
+                 les opérateurs en dessous : une Grid de cinq colonnes remplace
+                 l'ancien barre unique, ce qui aligne les touches sur la même
+                 grille visuelle que le reste du pavé. Les CommandParameter
+                 sont conservés : AdapterTouches s'en sert pour choisir la
+                 taille de police. -->
+            <Grid x:Name="BarreFonctions"
+                  Grid.Row="0"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="4"
+                  ColumnSpacing="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Text="x²"
+                        Style="{StaticResource ToucheFonction}"
+                        CommandParameter="x2"
+                        Clicked="OnActionTouche"
+                        SemanticProperties.Description="Élever le nombre au carré" />
+                <Button Grid.Column="1" Text="√x"
+                        Style="{StaticResource ToucheFonction}"
+                        CommandParameter="Racine"
+                        Clicked="OnActionTouche"
+                        SemanticProperties.Description="Racine carrée du nombre" />
+                <Button Grid.Column="2" Text="1/x"
+                        Style="{StaticResource ToucheFonction}"
+                        CommandParameter="Inverse"
+                        Clicked="OnActionTouche"
+                        SemanticProperties.Description="Inverse du nombre" />
+                <Button Grid.Column="3" Text="π"
+                        Style="{StaticResource ToucheFonction}"
+                        CommandParameter="Pi"
+                        Clicked="OnActionTouche"
+                        SemanticProperties.Description="Constante pi" />
+                <Button Grid.Column="4" Text="e"
+                        Style="{StaticResource ToucheFonction}"
+                        CommandParameter="e"
+                        Clicked="OnActionTouche"
+                        SemanticProperties.Description="Constante e" />
+            </Grid>
+
+            <!-- Ligne 1 : effacement et pourcentage. -->
+            <Button Grid.Row="1" Grid.Column="0"
+                    Text="AC"
+                    Style="{StaticResource ToucheFonction}"
+                    CommandParameter="AC"
+                    Clicked="OnActionTouche"
+                    SemanticProperties.Description="Tout effacer" />
+            <Button Grid.Row="1" Grid.Column="1"
+                    Text="CE"
+                    Style="{StaticResource ToucheFonction}"
+                    CommandParameter="CE"
+                    Clicked="OnActionTouche"
+                    SemanticProperties.Description="Effacer la saisie courante" />
+            <Button Grid.Row="1" Grid.Column="2"
+                    Text="⌫"
+                    Style="{StaticResource ToucheFonction}"
+                    CommandParameter="Retour"
+                    Clicked="OnActionTouche"
+                    SemanticProperties.Description="Effacer le dernier caractère" />
+            <Button Grid.Row="1" Grid.Column="3"
+                    Text="%"
+                    Style="{StaticResource ToucheFonction}"
+                    CommandParameter="%"
+                    Clicked="OnActionTouche"
+                    SemanticProperties.Description="Appliquer un pourcentage" />
+
+            <!-- Ligne 2 : 7 8 9 ÷ -->
+            <Button Grid.Row="2" Grid.Column="0" Text="7"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="7" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 7" />
+            <Button Grid.Row="2" Grid.Column="1" Text="8"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="8" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 8" />
+            <Button Grid.Row="2" Grid.Column="2" Text="9"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="9" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 9" />
+            <Button Grid.Row="2" Grid.Column="3" Text="÷"
+                    Style="{StaticResource ToucheOperateur}" CommandParameter="÷" Clicked="OnOperateurTouche"
+                    SemanticProperties.Description="Diviser" />
+
+            <!-- Ligne 3 : 4 5 6 × -->
+            <Button Grid.Row="3" Grid.Column="0" Text="4"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="4" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 4" />
+            <Button Grid.Row="3" Grid.Column="1" Text="5"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="5" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 5" />
+            <Button Grid.Row="3" Grid.Column="2" Text="6"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="6" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 6" />
+            <Button Grid.Row="3" Grid.Column="3" Text="×"
+                    Style="{StaticResource ToucheOperateur}" CommandParameter="×" Clicked="OnOperateurTouche"
+                    SemanticProperties.Description="Multiplier" />
+
+            <!-- Ligne 4 : 1 2 3 − -->
+            <Button Grid.Row="4" Grid.Column="0" Text="1"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="1" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 1" />
+            <Button Grid.Row="4" Grid.Column="1" Text="2"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="2" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 2" />
+            <Button Grid.Row="4" Grid.Column="2" Text="3"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="3" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 3" />
+            <Button Grid.Row="4" Grid.Column="3" Text="−"
+                    Style="{StaticResource ToucheOperateur}" CommandParameter="−" Clicked="OnOperateurTouche"
+                    SemanticProperties.Description="Soustraire" />
+
+            <!-- Ligne 5 : 0 , = + -->
+            <Button Grid.Row="5" Grid.Column="0" Text="0"
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="0" Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Chiffre 0" />
+            <Button Grid.Row="5" Grid.Column="1" Text=","
+                    Style="{StaticResource ToucheChiffre}" CommandParameter="," Clicked="OnChiffreTouche"
+                    SemanticProperties.Description="Virgule décimale" />
+            <Button Grid.Row="5" Grid.Column="2" Text="="
+                    Style="{StaticResource ToucheEgal}" CommandParameter="=" Clicked="OnActionTouche"
+                    SemanticProperties.Description="Calculer le résultat" />
+            <Button Grid.Row="5" Grid.Column="3" Text="+"
+                    Style="{StaticResource ToucheOperateur}" CommandParameter="+" Clicked="OnOperateurTouche"
+                    SemanticProperties.Description="Additionner" />
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

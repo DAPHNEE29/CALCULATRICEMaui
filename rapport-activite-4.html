@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Activite 4 - Calculatrice .NET MAUI - Rapport</title>
+<style>
+  @page { size: A4; margin: 9mm 10mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 7.6pt;
+    line-height: 1.26;
+    color: #14161d;
+    margin: 0;
+  }
+  h1 { font-size: 11.5pt; margin: 0 0 0.6mm 0; }
+  h2 {
+    font-size: 8.4pt; margin: 2.2mm 0 0.9mm 0;
+    padding-bottom: 0.4mm; border-bottom: 0.5pt solid #4c5bd4;
+    color: #2b3170;
+  }
+  .entete { border-bottom: 1.4pt solid #4c5bd4; padding-bottom: 1mm; margin-bottom: 1.4mm; }
+  .sous-titre { font-size: 7.6pt; color: #555b6b; margin: 0; }
+  .auteur { font-size: 7.4pt; color: #555b6b; margin: 0.5mm 0 0 0; }
+  p { margin: 0 0 0.9mm 0; text-align: justify; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 1mm; }
+  th, td { text-align: left; vertical-align: top; padding: 0.6mm 1.2mm; border: 0.4pt solid #c8ccdb; }
+  th { background: #eef0f9; font-weight: 600; }
+  td.etat-ok { color: #1c7a4a; font-weight: 600; }
+  td.etat-todo { color: #b54708; font-weight: 600; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 7.4pt; }
+  .note { font-size: 6.9pt; color: #555b6b; }
+  ul { margin: 0 0 0.9mm 0; padding-left: 3.8mm; }
+  li { margin-bottom: 0.4mm; }
+  .deux-colonnes { display: flex; gap: 5mm; }
+  .colonne { flex: 1; }
+</style>
+</head>
+<body>
+
+<div class="entete">
+  <h1>Activité 4 — Calculatrice .NET MAUI</h1>
+  <p class="sous-titre">Rapport d'avancement du projet</p>
+  <p class="auteur">EGOUME AYOUMA MARIE DAPHNÉE — 22G00106</p>
+</div>
+
+<h2>1. Avancement du projet</h2>
+<table>
+  <tr><th style="width:34%">Livrable</th><th style="width:16%">État</th><th>Observation</th></tr>
+  <tr>
+    <td>Application MAUI</td>
+    <td class="etat-ok">Terminé</td>
+    <td>Fonctionnelle sur les quatre plateformes ciblées ; parcours vérifié sur Windows (écran, paysage, fenêtre réduite).</td>
+  </tr>
+  <tr>
+    <td>Tests unitaires</td>
+    <td class="etat-ok">Terminé</td>
+    <td>167 tests automatisés sur le moteur de calcul, tous réussis.</td>
+  </tr>
+  <tr>
+    <td>Dispositions (4 layouts minimum)</td>
+    <td class="etat-ok">Terminé</td>
+    <td>Six conteneurs employés sur une même page, justifiés en section 3.</td>
+  </tr>
+  <tr>
+    <td>Rapport PDF (une page)</td>
+    <td class="etat-ok">Terminé</td>
+    <td>Ce document.</td>
+  </tr>
+  <tr>
+    <td>Dépôt GitHub public</td>
+    <td class="etat-todo">À faire</td>
+    <td>Git n'est pas installé sur la machine ; le projet est prêt à être versionné (fichier <code>.gitignore</code> en place).</td>
+  </tr>
+  <tr>
+    <td>Vidéo MP4 (15 s max.)</td>
+    <td class="etat-todo">À faire</td>
+    <td>À enregistrer depuis l'application lancée, écran et webcam simultanés.</td>
+  </tr>
+</table>
+
+<h2>2. Fonctionnalités livrées</h2>
+<p>Les opérations de base imposées par l'énoncé sont toutes présentes : les quatre opérations avec priorités opératoires, la saisie décimale, la remise à zéro totale et l'effacement du dernier caractère, le changement de signe, le pourcentage, la division par zéro traitée explicitement, et l'affichage de l'opération en cours au-dessus du résultat. S'y ajoutent des fonctions avancées non obligatoires : carré, racine carrée, inverse, constantes <code>π</code> et <code>e</code>, mémoire <code>M+</code>/<code>MR</code>/<code>MC</code> (masquées dans l'interface), historique persistant restaurable d'un appui, copie et collage du presse-papiers, thème clair/sombre, retour haptique et annonces d'accessibilité.</p>
+
+<h2>3. Dispositions : layouts employés et justification</h2>
+<table>
+  <tr><th style="width:26%">Layout</th><th>Emplacement et justification (une phrase)</th></tr>
+  <tr>
+    <td><code>Grid</code></td>
+    <td>Racine de la page, pavé numérique et rangée des fonctions : des lignes et colonnes en <code>*</code> partagent l'espace disponible, si bien que le pavé se redimensionne sans taille fixe et ne déborde jamais.</td>
+  </tr>
+  <tr>
+    <td><code>VerticalStackLayout</code></td>
+    <td>Zone d'affichage : il empile l'expression, puis le résultat, dans l'ordre de lecture naturel, sans avoir à gérer de coordonnées.</td>
+  </tr>
+  <tr>
+    <td><code>HorizontalStackLayout</code></td>
+    <td>Ligne de message : l'erreur s'affiche à côté de la calculette sur une seule hauteur, la troncature du texte empêchant qu'elle ne pousse la ligne vers le haut.</td>
+  </tr>
+  <tr>
+    <td><code>ScrollView</code></td>
+    <td>Zone d'affichage : il garantit qu'un résultat long reste consultable sur un petit écran au lieu d'être tronqué, le pavé conservant en permanence toute sa hauteur.</td>
+  </tr>
+  <tr>
+    <td><code>FlexLayout</code></td>
+    <td>Barre d'outils : il passe les touches à la ligne quand la largeur manque, là où une <code>Grid</code> aurait figé leur position et rogné la dernière.</td>
+  </tr>
+  <tr>
+    <td><code>Border</code></td>
+    <td>Cadre de l'affichage : il arrondit les angles et pose une bordure fine qui sépare visuellement le résultat du pavé, sans ajouter de conteneur supplémentaire.</td>
+  </tr>
+</table>
+
+<h2>4. Architecture et qualité du code</h2>
+<div class="deux-colonnes">
+  <div class="colonne">
+    <p>La solution sépare le moteur de calcul, l'interface et les tests en trois projets. Le moteur ne référence aucune classe d'interface : il est donc testable seul, ce qui explique la quasi-totalité des 167 tests. La page appelle un <code>CalculatorViewModel</code> qui relaie l'état du moteur et notifie les changements ; aucun calcul n'est écrit dans le code-behind, qui ne fait qu'aiguiller les événements des touches.</p>
+    <p>Écart assumé : l'énoncé évoque un projet <em>Single Project</em> ; l'adoption d'un découpage MVVM a été préférée pour la testabilité, tout en conservant la liaison XAML / code-behind décrite dans les objectifs.</p>
+  </div>
+  <div class="colonne">
+    <p>Le collage du presse-papiers est le point le plus délicat : le moteur nettoie le texte collé (symboles <code>×</code> <code>÷</code> <code>−</code>, virgule décimale française, espaces de milliers) puis le relaie par ses méthodes de saisie ordinaires, ce qui évite tout contournement des règles de saisie.</p>
+    <p class="note">Build sans erreur sur Android, iOS, Mac Catalyst et Windows. Douze avertissements <code>XC0022</code> subsistent sur la page Historique (bindings résolus à l'exécution) : sans effet sur le fonctionnement.</p>
+  </div>
+</div>
+
+<h2>5. Difficultés rencontrées et résolues</h2>
+<ul>
+  <li><strong>Fermeture de l'application au clic sur « Historique ».</strong> La fenêtre racine était créée directement depuis la page principale, sans pile de navigation : l'appel à <code>Navigation.PushAsync</code> échouait et détruisait la fenêtre. La page est désormais encapsulée dans une <code>NavigationPage</code>, ce qui rend l'ouverture et le retour fonctionnels.</li>
+  <li><strong>Pavé rogné en bas de l'écran.</strong> Deux causes distinctes : une hauteur de fenêtre fixe qui dépassait l'écran à 125 % d'échelle d'affichage, et des tailles de touches figées. La taille initiale est maintenant calculée à partir de l'écran réellement disponible, et la disposition ajuste les touches à l'espace restant.</li>
+  <li><strong>Comportement à vérifier en permanence.</strong> Les tests d'interface par clics simulés ne sont pas transmis à l'application WinUI ; le contrôle a été refait via l'accessibilité, ce qui a permis de confirmer chaque parcours jusqu'à l'historique.</li>
+</ul>
+
+</body>
+</html>
